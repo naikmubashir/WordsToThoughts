@@ -24,7 +24,7 @@ const UserHeader = () => {
       <VStack gap={4} alignItems={'start'}>
         <Flex justifyContent={'space-between'} w={'full'}>
             <Box>
-                <Text fontSize={'2xl'} fontWeight={'bold'} >
+                <Text fontSize={'2xl'} fontWeight={'bold'}>
                     Mark Zuckerberg
                 </Text>
                 <Flex gap={2} alignItems={'center'}>
