@@ -7,20 +7,22 @@ export const getUserProfile= async(req,res)=>{
     const {username}=req.params;
     try {
         const user= await User.findOne({username}).select('-password').select('-updatedAt');
-        if(!user) return res.status(400).json({message:'User not found'});
+        if(!user) return res.status(400).json({error:'User not found'});
         res.status(200).json({user})
     } catch (err) {
         console.log('Error in getUserProfile:', err.message);
-        res.status(500).json({message:'Error while fetching user profile'});
+        res.status(500).json({error:err.message});
     }
 }
 
 export const signupUser= async (req,res)=>{
     try{
         const {name, email, username, password}= req.body;
+        if( !username || !password || !email || !name) return res.status(400).json({error:"All fields are required...."});
+
         const user = await User.findOne({ $or: [{ email }, { username }] });
         if (user) {
-            return res.status(400).json({ message: "User already exists" });
+            return res.status(400).json({ error: "User already exists" });
         }
         const salt= await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -31,26 +33,27 @@ export const signupUser= async (req,res)=>{
             generateTokenAndSetCookie(newUser._id,res);
             res.status(201).json({_id:newUser._id, name:newUser.name, email:newUser.email, username:newUser.username})
         }else{
-            res.status(400).json({message:"Invalid user data"});
+            res.status(400).json({error:"Invalid user data"});
         }
     }catch(err){
-        res.status(500).json({message:err.message})
+        res.status(500).json({error:err.message})
     }
 }
 
 export const loginUser= async(req,res)=>{
     try{
         const { username, password}= req.body;
+        if(!username || !password ) return res.status(400).json({error:'Username and password are required...'});
         const user = await User.findOne({username});
         const isPasswordCorrect= await bcrypt.compare(password, user?.password || "");
         if (!user || !isPasswordCorrect) {
-            return res.status(400).json({message:"Invalid username or password"})
+            return res.status(400).json({error:"Invalid username or password"})
         }
         generateTokenAndSetCookie(user._id,res);
         res.status(200).json({_id:user._id, name:user.name, email:user.email, username:user.username});  
         
     }catch(err){
-        res.status(500).json({message:err.message})
+        res.status(500).json({error:err.message})
     }
 }
 
@@ -59,7 +62,7 @@ export const logoutUser= async(req, res)=>{
         res.cookie('jwt',"",{maxAge:1});
         res.status(200).json({message:"User logged out successfully!!"})
     } catch (err) {
-        res.status(500).json({message:err.message})
+        res.status(500).json({error:err.message})
     }
 }
 
@@ -68,9 +71,9 @@ export const followUnfollowUser= async (req, res)=>{
         const {id}= req.params;
         const userToModify= await User.findById(id);
         const currentUser= await User.findById(req.user._id);
-        if(id==req.user._id.toString())return res.status(400).json({message:'You cannot follow/unfollow yourself'});
+        if(id==req.user._id.toString())return res.status(400).json({error:'You cannot follow/unfollow yourself'});
         
-        if(!userToModify || !currentUser) return res.status(400).json({message:'User not found'});
+        if(!userToModify || !currentUser) return res.status(400).json({error:'User not found'});
         const isFollowing= currentUser.following.includes(id);
         if(isFollowing){//toggling
             //unfollow
@@ -87,7 +90,7 @@ export const followUnfollowUser= async (req, res)=>{
             
         }
     }catch(err){
-        res.status(500).json({message:err.message});
+        res.status(500).json({error:err.message});
         console.log('Error in FOllow/Unfollow user')
     }
 }
@@ -97,7 +100,7 @@ export const updateUser = async (req, res) => {
     const userId = req.user._id; //in req.user._id  THE "user" is set in the protectRoute from the token in cookies 
     try {
         let user = await User.findById(userId);
-        if(!user) return res.status(400).json({message: 'User not found'});
+        if(!user) return res.status(400).json({error: 'User not found'});
         // if (req.params.id !== userId.toString()){
 		// 	return res.status(400).json({ error: "You cannot update other user's profile" });
 
@@ -118,7 +121,7 @@ export const updateUser = async (req, res) => {
         res.status(200).json({message: 'Profile updated successfully!!!', user})
 
     } catch (err) {
-        res.status(500).json({message: err.message});
+        res.status(500).json({error: err.message});
         console.log('Error while updating the user')
     }
 }
