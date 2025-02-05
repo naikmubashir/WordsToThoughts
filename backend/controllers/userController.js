@@ -31,7 +31,7 @@ export const signupUser= async (req,res)=>{
         await newUser.save();
         if(newUser){
             generateTokenAndSetCookie(newUser._id,res);
-            res.status(201).json({_id:newUser._id, name:newUser.name, email:newUser.email, username:newUser.username})
+            res.status(201).json({_id:newUser._id, name:newUser.name, email:newUser.email, username:newUser.username, bio:newUser.bio, profilePic:newUser.profilePic})
         }else{
             res.status(400).json({error:"Invalid user data"});
         }
@@ -50,7 +50,7 @@ export const loginUser= async(req,res)=>{
             return res.status(400).json({error:"Invalid username or password"})
         }
         generateTokenAndSetCookie(user._id,res);
-        res.status(200).json({_id:user._id, name:user.name, email:user.email, username:user.username});  
+        res.status(200).json({_id:user._id, name:user.name, email:user.email, username:user.username, bio:newUser.bio, profilePic:newUser.profilePic});  
         
     }catch(err){
         res.status(500).json({error:err.message})
