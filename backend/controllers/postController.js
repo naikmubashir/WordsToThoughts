@@ -5,26 +5,26 @@ export const createPost= async (req,res)=>{
     try {
         const {postedBy, text, img}=req.body;
         if(!postedBy || !text){
-            return res.status(400).json({message:'PostedBy and Text fields are required'})
+            return res.status(400).json({error:'PostedBy and Text fields are required'})
         }
         const user= await User.findById(postedBy);
         if(!user){
-            return res.status(404).json({message:'User nto found'})
+            return res.status(404).json({errior:'User nto found'})
         }
         if(user._id.toString()!== req.user._id.toString()) {//or postedBy!== req.user._id
             console.log(user._id)
             console.log(req.user._id)
-            return res.status(401).json({message:'unauthorized to create post'})
+            return res.status(401).json({error:'unauthorized to create post'})
         }
         const maxLength=500;
         if(text.length >maxLength){
-            return res.status(400).json({message:`Test must be less than ${maxLength} characters`})
+            return res.status(400).json({error:`Test must be less than ${maxLength} characters`})
         }
         const newPost= new Post({postedBy, text, img});
         await newPost.save();
         res.status(201).json({message:'Post created successfully', newPost})
     } catch (err) {
-        res.status(500).json({message:err.message});
+        res.status(500).json({error:err.message});
         console.log(err);
     }
 }
@@ -46,10 +46,10 @@ export const deletePost= async (req,res) => {
     try {
         const post= await Post.findById(req.params.id);
         if(!post){
-            return res.status(404 ).json({message:'Post not found...'})
+            return res.status(404 ).json({error:'Post not found...'})
         }
         if(req.user._id.toString() !== post.postedBy.toString()){
-            return res.status(401).json({message:'Not authorized t delete this post'})
+            return res.status(401).json({error:'Not authorized t delete this post'})
         }
          await Post.findByIdAndDelete(req.params.id);
          res.status(200).json({message:"Post deleted successfully.."})
