@@ -1,6 +1,7 @@
 import User from "../models/UserModel.js";
 import bcrypt from 'bcryptjs'
 import generateTokenAndSetCookie from "../utils/helpers/generateTokenAndSetCookie.js";
+import { v2 as cloudinary } from "cloudinary";
 
 
 export const getUserProfile= async(req,res)=>{
@@ -96,7 +97,8 @@ export const followUnfollowUser= async (req, res)=>{
 }
 
 export const updateUser = async (req, res) => {
-    const {name, email, username, password, profilePic, bio} = req.body;
+    const {name, email, username, password, bio} = req.body;
+    let {profilePic}= req.body;
     const userId = req.user._id; //in req.user._id  THE "user" is set in the protectRoute from the token in cookies 
     try {
         let user = await User.findById(userId);
@@ -110,6 +112,13 @@ export const updateUser = async (req, res) => {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
             user.password = hashedPassword;
+        }
+        if(profilePic){
+            if(user.profilePic){
+                await cloudinary.uploader.destroy(user.profilePic.split('/').pop().split('.')[0])
+            }
+            const uploadedResponse= await cloudinary.uploader.upload(profilePic);
+            profilePic=uploadedResponse.secure_url;
         }
         user.name = name || user.name;
         user.email = email || user.email;
