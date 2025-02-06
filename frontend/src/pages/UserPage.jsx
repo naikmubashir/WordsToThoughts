@@ -4,13 +4,30 @@ import UserPost from '../components/UserPost'
 // import { useParams } from 'react-router-dom';
 // import useShowToast from "..hooks/useShowToast";
 import useGetUserProfile from '../hooks/useGetUserProfile';
+import { Flex, Spinner } from '@chakra-ui/react';
 
 
 const UserPage = () => {
   const {loading,user}=useGetUserProfile();
+
+  if(!user && loading){
+    return<Flex justifyContent={'center'}>
+      <Spinner size={'xl'}/>
+    </Flex>
+  }
+  if(!user && !loading){
+    return <h1>User Not Foundddddd</h1>
+  }
   return (
   <>
-    <UserHeader user={user} loading={loading} />
+    <UserHeader user={user} />
+    
+    
+    
+    
+    
+    
+    
     <UserPost likes={867} replies={4} postImg='post1.png' postTitle={'Going for a walk'} />
     <UserPost likes={765} replies={14} postImg='post2.png' postTitle={'Studying ComSci'} />
     <UserPost likes={65} replies={3} postImg='post3.png' postTitle={'Building an app'} />
