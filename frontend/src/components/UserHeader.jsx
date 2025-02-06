@@ -4,7 +4,8 @@ import {CgMoreO} from 'react-icons/cg'
 import React from 'react'
 
 
-const UserHeader = () => {
+const UserHeader = ({user, loading}) => {
+    console.log(user)
     const toast= useToast();
     const copyURL=()=>{
         const currentURL= window.location.href;
@@ -25,23 +26,30 @@ const UserHeader = () => {
         <Flex justifyContent={'space-between'} w={'full'}>
             <Box>
                 <Text fontSize={'2xl'} fontWeight={'bold'}>
-                    Mark Zuckerberg
+                   {user?.name}
                 </Text>
                 <Flex gap={2} alignItems={'center'}>
-                    <Text fontSize={'sm'}>markzuckerberg</Text>
+                    <Text fontSize={'sm'}>{user?.username}</Text>
                     <Text fontSize={'xs'} bg={'gray.dark'} color={'gray.light'} p={1} borderRadius={'full'}>threads.net</Text>
                 </Flex>
             </Box>
             <Box>
-                <Avatar name='Mark Zuckerberg' src='/zuck-avatar.png' size={{
-                    base:'md',md:'xl'
-                }}/>
+                {user.profilePic && (
+                    <Avatar name={user?.name} src={user.profilePic} size={{
+                        base:'md',md:'xl'
+                    }}/>
+                )}
+                {!user.profilePic && (
+                    <Avatar name={user?.name} src='https://bit.ly/broken-link' size={{
+                        base:'md',md:'xl'
+                    }}/>
+                )}
             </Box>
         </Flex>
-            <Text >Co-founder, executive chairman and CEO of Meta Platforms.</Text>
+            <Text >{user?.bio}</Text>
             <Flex w={'full'} justify={'space-between'}>
                 <Flex  gap={2} alignItems={'center'}>
-                    <Text color={'gray.light'}>3.2K followers</Text>
+                    <Text color={'gray.light'}>{user?.followers.length} followers</Text>
                     <Box bg={'gray.light'} h={1} w={1} borderRadius={'full'}></Box>
                     <Link color={'gray.light'}>instagram.com</Link>
                 </Flex>
