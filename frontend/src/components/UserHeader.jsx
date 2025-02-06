@@ -5,10 +5,12 @@ import React from 'react'
 import {useRecoilValue} from 'recoil'
 import userAtom from '../atoms/userAtom' 
 import {Link as RouterLink} from 'react-router-dom'
+import useFollowUnfollow from "../hooks/useFollowUnfollow";
 
 const UserHeader = ({user}) => {
     //console.log(user)
 	const currentUser = useRecoilValue(userAtom); // logged-in user,
+    const { handleFollowUnfollow, following, updating } = useFollowUnfollow(user);
     const toast= useToast();
     const copyURL=()=>{
         const currentURL= window.location.href;
@@ -50,11 +52,16 @@ const UserHeader = ({user}) => {
             </Box>
         </Flex>
             <Text >{user?.bio}</Text>
-            {currentUser._id === user._id && (
+            {currentUser?._id === user._id && (
                 <RouterLink to='/update'>
                 <Button size={'sm'}> Update profile</Button>
                 </RouterLink>
             )}
+            {currentUser?._id !== user._id && (
+            <Button size={'sm'} onClick={handleFollowUnfollow} isLoading={updating}> {following? 'Unfollow': 'Follow'} </Button>
+                
+            )}
+
             <Flex w={'full'} justify={'space-between'}>
                 <Flex  gap={2} alignItems={'center'}>
                     <Text color={'gray.light'}>{user?.followers.length} followers</Text>
