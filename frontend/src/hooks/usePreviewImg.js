@@ -18,8 +18,8 @@ const usePreviewImg = () => {
             showToast("Invalid file type","Please select an image file")
         }
     }
-    console.log(imgUrl)
-    return {handleImageChange, imgUrl}
+    //console.log(imgUrl)
+    return {handleImageChange, imgUrl,setImgUrl}
 }
 
 export default usePreviewImg

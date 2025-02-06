@@ -18,20 +18,23 @@ import useShowToast from "../hooks/useShowToast";
 
 export default function UpdateProfilePage() {
 	const [user, setUser] = useRecoilState(userAtom);
+
+	const { handleImageChange,imgUrl} = usePreviewImg();
 	const [inputs, setInputs] = useState({
-		name: user.name,
-		username: user.username,
-		email: user.email,
-		bio: user.bio,
-		password: "",
+			name: user.name,
+			username: user.username,
+			email:  user.email,
+			bio: user.bio,
+			password: "",
+			
 	});
+	// console.log('INNNN',inputs.name)
 	const fileRef = useRef(null);
 	const [updating, setUpdating] = useState(false);
 
 	const showToast = useShowToast();
-
-	const { handleImageChange,imgUrl} = usePreviewImg();
-
+	console.log('dd',user)
+console.log('imggggg',imgUrl)
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (updating) return;
@@ -42,7 +45,7 @@ export default function UpdateProfilePage() {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ ...inputs,  }),
+				body: JSON.stringify({ ...inputs, profilePic: imgUrl || user.profilePic }),
 			});
 			const data = await res.json(); // updated user object
 			if (data.error) {
@@ -50,16 +53,19 @@ export default function UpdateProfilePage() {
 				return;
 			}
 			showToast("Success", "Profile updated successfully", "success");
-			setUser(data);
+			//console.log("SUBBB",data)
+			 setUser(data);
 			localStorage.setItem("user-threads", JSON.stringify(data));
+
 		} catch (error) {
-			showToast("Error", error, "error");
+			showToast("Error", error, "Could not update the profileeeee");
 		} finally {
 			setUpdating(false);
 		}
 	};
 	return (
 		<form onSubmit={handleSubmit}>
+			
 			<Flex align={"center"} justify={"center"} my={6}>
 				<Stack
 					spacing={4}

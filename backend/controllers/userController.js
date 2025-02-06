@@ -51,7 +51,7 @@ export const loginUser= async(req,res)=>{
             return res.status(400).json({error:"Invalid username or password"})
         }
         generateTokenAndSetCookie(user._id,res);
-        res.status(200).json({_id:user._id, name:user.name, email:user.email, username:user.username, bio:newUser.bio, profilePic:newUser.profilePic});  
+        res.status(200).json({_id:user._id, name:user.name, email:user.email, username:user.username, bio:user.bio, profilePic:user.profilePic});  
         
     }catch(err){
         res.status(500).json({error:err.message})
@@ -105,7 +105,6 @@ export const updateUser = async (req, res) => {
         if(!user) return res.status(400).json({error: 'User not found'});
         // if (req.params.id !== userId.toString()){
 		// 	return res.status(400).json({ error: "You cannot update other user's profile" });
-
         // }
 
         if(password){
@@ -127,7 +126,9 @@ export const updateUser = async (req, res) => {
         user.bio = bio || user.bio;
 
         user = await user.save();
-        res.status(200).json({message: 'Profile updated successfully!!!', user})
+        // password should be null in response
+		user.password = null;
+        res.status(200).json(user)
 
     } catch (err) {
         res.status(500).json({error: err.message});
