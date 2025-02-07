@@ -1,15 +1,16 @@
 import User from "../models/UserModel.js";
 import Post from "../models/postModel.js";
-
+import {v2 as cloudinary} from 'cloudinary'
 export const createPost= async (req,res)=>{
     try {
-        const {postedBy, text, img}=req.body;
+        const {postedBy, text}=req.body;
+        let {img}=req.body;
         if(!postedBy || !text){
             return res.status(400).json({error:'PostedBy and Text fields are required'})
         }
         const user= await User.findById(postedBy);
         if(!user){
-            return res.status(404).json({errior:'User nto found'})
+            return res.status(404).json({error:'User nto found'})
         }
         if(user._id.toString()!== req.user._id.toString()) {//or postedBy!== req.user._id
             console.log(user._id)
@@ -19,6 +20,10 @@ export const createPost= async (req,res)=>{
         const maxLength=500;
         if(text.length >maxLength){
             return res.status(400).json({error:`Test must be less than ${maxLength} characters`})
+        }
+        if(img){
+            const uploadedResponse= await cloudinary.uploader.upload(img);
+            img=uploadedResponse.secure_url;
         }
         const newPost= new Post({postedBy, text, img});
         await newPost.save();
