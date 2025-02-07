@@ -13,7 +13,7 @@ cloudinary.config({
     api_key:process.env.CLOUDINARY_API_KEY,
     api_secret:process.env.CLOUDINARY_API_KEY_SECRET
 })
-app.use(express.json()); //To parse JSON data in req body
+app.use(express.json({limit:'50mb'})); //To parse JSON data in req body. limit:'50mb' for the payload error. Now it will allow upto 50mb
 app.use(express.urlencoded({extended:false}));// To parse form data in req body
 app.use(cookieParser());
 
