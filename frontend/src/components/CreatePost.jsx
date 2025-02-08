@@ -52,7 +52,7 @@ const CreatePost = () => {
                 return;
             }
 			showToast("Success", "Post created successfully", "success");
-            if(username===user.username){
+            if(username===user.username){//without this check it could add the post to other person profile eg. if we visit someones profile and add a post , the post will appear there on their profile.
                 setPosts([data, ...posts]); //for the ui
             }
             onClose();
