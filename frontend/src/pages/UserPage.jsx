@@ -1,14 +1,45 @@
 import React, { useEffect, useState } from 'react'
 import UserHeader from '../components/UserHeader'
 import UserPost from '../components/UserPost'
-// import { useParams } from 'react-router-dom';
-// import useShowToast from "..hooks/useShowToast";
 import useGetUserProfile from '../hooks/useGetUserProfile';
 import { Flex, Spinner } from '@chakra-ui/react';
+import { useParams } from 'react-router-dom';
+import useShowToast from '../hooks/useShowToast';
+import { useRecoilState } from 'recoil';
+import postsAtom from '../atoms/postsAtom';
+import Post from '../components/Post';
 
 
 const UserPage = () => {
   const {loading,user}=useGetUserProfile();
+  const { username } = useParams();
+  const showToast = useShowToast();
+  const [posts, setPosts] = useRecoilState(postsAtom);
+  const [fetchingPosts, setFetchingPosts] = useState(true);
+
+
+  useEffect(()=>{
+    const getPosts=async()=>{
+      if(!user) return;
+      setPosts([]);
+      setFetchingPosts(true);
+      try {
+        const res= await fetch(`/api/posts/user/${username}`);
+        const data= await res.json();
+        console.log(data);
+        setPosts(data);
+      } catch (error) {
+        showToast("Error", error.message, "error");
+				setPosts([]);
+      }finally {
+				setFetchingPosts(false);
+			}
+    }
+    getPosts();
+  },[username, showToast, setPosts, user])
+
+
+
 
   if(!user && loading){
     return<Flex justifyContent={'center'}>
@@ -21,17 +52,15 @@ const UserPage = () => {
   return (
   <>
     <UserHeader user={user} />
-    
-    
-    
-    
-    
-    
-    
-    <UserPost likes={867} replies={4} postImg='post1.png' postTitle={'Going for a walk'} />
-    <UserPost likes={765} replies={14} postImg='post2.png' postTitle={'Studying ComSci'} />
-    <UserPost likes={65} replies={3} postImg='post3.png' postTitle={'Building an app'} />
-    <UserPost likes={233} replies={43}  postTitle={'Playing football'} />
+    {!fetchingPosts && posts.length===0 && <h1>User has not posts.</h1>}
+    {fetchingPosts &&(
+      <Flex justifyContent={'center'}>
+      <Spinner size={'xl'}/>
+    </Flex>
+    )}
+    {posts.map(post=>(
+      <Post key={post._id} post={post} postedBy={post.postedBy} />
+    ))}
   </>
   )
 }

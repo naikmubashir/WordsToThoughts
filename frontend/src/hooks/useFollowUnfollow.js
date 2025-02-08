@@ -34,7 +34,7 @@ const useFollowUnfollow=(user)=>{
                 user.followers.pop();//this will -1 the followers in the profile UI... This is for the client side only. Server side is done automaticaly when fetch requesting in line 19
             }else{
                 showToast("Success", `Followed ${user.name}`, "success");
-                user.followers.push(user?._id);//Similarly simulate the followers count which is displayed on user profile
+                user.followers.push(currentUser?._id);//Similarly simulate the followers count which is displayed on user profile
                 
             }
             setFollowing(!following);
