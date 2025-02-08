@@ -2,12 +2,24 @@ import User from "../models/UserModel.js";
 import bcrypt from 'bcryptjs'
 import generateTokenAndSetCookie from "../utils/helpers/generateTokenAndSetCookie.js";
 import { v2 as cloudinary } from "cloudinary";
+import mongoose from "mongoose";
+import Post from "../models/postModel.js";
 
 
 export const getUserProfile= async(req,res)=>{
-    const {username}=req.params;
+    const {query}=req.params;
+    //we will fetch user profile either with username of userId
+    //query is either gonna be username or userId 
     try {
-        const user= await User.findOne({username}).select('-password').select('-updatedAt');
+        let user;
+ 
+		// query is userId
+		if (mongoose.Types.ObjectId.isValid(query)) {
+			user = await User.findOne({ _id: query }).select("-password").select("-updatedAt");
+		} else {
+			// query is username
+			user = await User.findOne({ username: query }).select("-password").select("-updatedAt");
+		}
         if(!user) return res.status(400).json({error:'User not found'});
         res.status(200).json(user)
     } catch (err) {
@@ -126,6 +138,23 @@ export const updateUser = async (req, res) => {
         user.bio = bio || user.bio;
 
         user = await user.save();
+
+        // Find all posts that this user replied and update username and userProfilePic fields
+        // Update all posts that contain replies made by the updated user.
+        // This operation sets the new username and profile picture for each reply by the user.
+        await Post.updateMany(
+            { "replies.userId": userId }, // Find posts where any reply was made by the user.
+            {
+                $set: {
+                    "replies.$[reply].username": user.username,       // Update the username in the reply.
+                    "replies.$[reply].userProfilePic": user.profilePic,   // Update the user's profile picture in the reply.
+                },
+            },
+            {
+                arrayFilters: [{ "reply.userId": userId }] // Apply changes only to replies matching the given userId.
+            }
+        );
+
         // password should be null in response
 		user.password = null;
         res.status(200).json(user)
