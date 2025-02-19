@@ -3,8 +3,10 @@ import connectDB from './db/connectDB.js'
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
+import messageRoutes from "./routes/messageRoutes.js";
+import {io, server, app} from './socket/socket.js'
+
 const PORT=process.env.PORT || 5000
-const app= express();
 import {v2 as cloudinary} from 'cloudinary'
 
 connectDB();
@@ -20,5 +22,6 @@ app.use(cookieParser());
 //routes
 app.use('/api/users',userRoutes)
 app.use('/api/posts',postRoutes)
+app.use("/api/messages", messageRoutes);
 
-app.listen(PORT,()=>console.log(`server running on ${PORT}`))
+server.listen(PORT,()=>console.log(`server running on ${PORT}`))
