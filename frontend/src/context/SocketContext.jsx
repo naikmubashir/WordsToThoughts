@@ -15,7 +15,7 @@ export const SocketContextProvider = ({ children }) => {
 	const user = useRecoilValue(userAtom);
 
 	useEffect(() => {
-		const socket = io("http://localhost:8000", {
+		const socket = io("/", {// in development http://localhost:8000 . In production the server link: render.com/blahblah. As we have on same port here so just /
 			query: {
 				userId: user?._id,
 			},

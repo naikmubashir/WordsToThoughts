@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
 		port: 3000,
+		// Get rid of the CORS error
 		proxy: {
 			"/api": {
 				target: "http://localhost:8000",
@@ -13,5 +14,7 @@ export default defineConfig({
 				secure: false,
 			},
 		},
+		// allowedHosts: ['818e-117-96-40-95.ngrok-free.app'],
+
 	},
 })
