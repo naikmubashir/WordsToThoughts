@@ -7,14 +7,14 @@ import messageRoutes from "./routes/messageRoutes.js";
 import {io, server, app} from './socket/socket.js'
 import path from 'path';
 import dotenv from "dotenv";
-import {renderapp,renderappp} from './utils/helpers/render.js';
+// import {renderapp,renderappp} from './utils/helpers/render.js';
 
 const PORT=process.env.PORT || 8000
 import {v2 as cloudinary} from 'cloudinary'
 const __dirname=path.resolve(); 
 dotenv.config();
-renderapp.start();
-renderappp.start();
+// renderapp.start();
+// renderappp.start();
 connectDB();
 cloudinary.config({
     cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
