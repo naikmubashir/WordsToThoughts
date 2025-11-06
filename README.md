@@ -10,7 +10,7 @@ Welcome to Vibes App! This is a social media platform where users can connect, s
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [Code Of Conduct](#code_of_conduct)
+- [Code Of Conduct](#code-of-conduct)
 - [License](#license)
 
 ## Introduction
@@ -68,6 +68,7 @@ We welcome contributions! To contribute:
 5. Open a pull request.
 
 ## Code Of Conduct
+
 See [Code of Conduct](Code_of_conduct.md)
 
 ## License
