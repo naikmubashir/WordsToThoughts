@@ -10,6 +10,7 @@ Welcome to Vibes App! This is a social media platform where users can connect, s
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [Code Of Conduct](#code_of_conduct)
 - [License](#license)
 
 ## Introduction
