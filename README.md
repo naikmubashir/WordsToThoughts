@@ -67,6 +67,9 @@ We welcome contributions! To contribute:
 4. Push to the branch (`git push origin feature/your-feature-name`).
 5. Open a pull request.
 
+## Code Of Conduct
+See [Code of Conduct](Code_of_conduct)
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
