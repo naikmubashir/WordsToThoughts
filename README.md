@@ -69,7 +69,7 @@ We welcome contributions! To contribute:
 
 ## Code Of Conduct
 
-See [Code of Conduct](Code_of_conduct.md)
+See [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## License
 
