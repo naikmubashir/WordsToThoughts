@@ -68,7 +68,7 @@ We welcome contributions! To contribute:
 5. Open a pull request.
 
 ## Code Of Conduct
-See [Code of Conduct](Code_of_conduct)
+See [Code of Conduct](Code_of_conduct.md)
 
 ## License
 
